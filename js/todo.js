@@ -4,11 +4,11 @@ const todos = [
     completed: false
   },
   {
-    text: "Go abroad",
+    text: "Express JS",
     completed: false
   },
   {
-    text: "Emmanuel",
+    text: "MongoDB",
     completed: false
   },
   {
@@ -25,15 +25,32 @@ const todos = [
   }
 ];
 
-let search = "";
+let filters = {
+  searchText: "",
+  hideCompleted: false
+};
 
 //RENDERING
-const renderTodos = function(todos, search) {
-  const allTodos = todos.filter(function(todo) {
-    return todo.text.toLowerCase().includes(search.toLowerCase());
+const renderTodos = function(todos, filters) {
+  let filteredTodos = todos.filter(function(todo) {
+    return todo.text.toLowerCase().includes(filters.searchText.toLowerCase());
   });
+
+  //Showing incmpleted todos
+  //I have refilter my filtered todos to pull out all the incompleted ones
+  //So i have to update my filteredTodos
+
+  filteredTodos = filteredTodos.filter(function(todo) {
+    if (filters.hideCompleted) {
+      return !todo.completed;
+    } else {
+      return true;
+    }
+  });
+
   document.querySelector("#todos").innerHTML = "";
-  allTodos.forEach(function(todo) {
+
+  filteredTodos.forEach(function(todo) {
     const eL = document.createElement("p");
     eL.textContent = todo.text;
     document.querySelector("#todos").appendChild(eL);
@@ -53,15 +70,15 @@ const renderTodos = function(todos, search) {
   // END OF Displaying incomplete todos remaining
 };
 
-renderTodos(todos, search);
+renderTodos(todos, filters);
 
-//END OF RENDERING
+//END OF RENDERING=====>
 
 //EVENT LISTENER
 
 document.querySelector("#search-text").addEventListener("input", function(e) {
-  search = e.target.value;
-  renderTodos(todos, search);
+  filters.searchText = e.target.value;
+  renderTodos(todos, filters); //This will reactivate or refresh the rendering functions
 });
 
 //PUSHING ITEM INO THE ARRAY FOR RENDERING
@@ -72,7 +89,13 @@ document.querySelector("#todo-form").addEventListener("submit", function(e) {
     text: e.target.elements.todoText.value,
     completed: false
   });
-  renderTodos(todos, search);
+  renderTodos(todos, filters); //Refreshing the rendering to take effect of this action
   e.target.elements.todoText.value = "";
-  console.log(todos);
 });
+
+document
+  .querySelector("#hide-completed")
+  .addEventListener("change", function(e) {
+    filters.hideCompleted = e.target.checked;
+    renderTodos(todos, filters);
+  });
