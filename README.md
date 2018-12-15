@@ -1,6 +1,7 @@
 # TODO APP
 
 This is an app that keep track of your todo's plan
+### preview the update <https://tweneboah.github.io/todo-app>
 
 ```javascript
 const todos = [
